@@ -1,9 +1,10 @@
 pragma solidity ^0.4.24;
 
 import "./erc20i.sol";
+import "./own.sol";
 import "./SafeMath.sol";
 
-contract ERC20Token is ERC20I {
+contract ERC20Token is ERC20I,Ownable {
   using SafeMath for uint256;
 
   mapping (address => uint256) private balances;
@@ -50,7 +51,7 @@ contract ERC20Token is ERC20I {
   }
 
 
-  function burn(address account,uint256 amount) public returns(bool){
+  function burn(address account,uint256 amount) public onlyOwner returns(bool) {
     require(amount <= balances[account]);
     _totalSupply = _totalSupply.sub(amount);
     balances[account] = balances[account].sub(amount);
@@ -58,7 +59,7 @@ contract ERC20Token is ERC20I {
     return true;
   }
 
-  function mint(address to, uint256 amount) public returns(bool){
+  function mint(address to, uint256 amount) public onlyOwner returns(bool)  {
     require(to != 0);
     balances[to] = balances[to].add(amount);
     _totalSupply = _totalSupply.add(amount);
